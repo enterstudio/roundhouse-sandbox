@@ -18,6 +18,7 @@ gem 'rlet', '~> 0.7.0'
 gem 'activeresource', git: 'git://github.com/Shopify/activeresource'
 gem 'shopify_app'
 gem 'shopify-kaminari'
+gem 'awesome_print', require: 'ap'
 
 # Fake data generator for Shopify
 #gem 'shopify_faker', git: 'git://github.com/shopappsio/shopify_faker.git'
