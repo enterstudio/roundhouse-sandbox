@@ -1,9 +1,9 @@
 ---
-1:
+- id: 100
   shopify_domain: test-app-1.myshopify.com
   api_key: something
   password: something
-2:
+- id: 200
   shopify_domain: test-app-2.myshopify.com
   api_key: something
   password: something
