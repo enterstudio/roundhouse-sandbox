@@ -25,6 +25,9 @@ gem 'awesome_print', require: 'ap'
 gem 'shopify_faker', path: '../gems/shopify_faker'
 gem 'fabrication'
 
+# Sinatra (for Sidekiq and Roundhouse web)
+gem 'sinatra'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
