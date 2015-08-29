@@ -1,0 +1,6 @@
+---
+:concurrency: 3
+:pidfile: tmp/pids/roundhouse.pid
+:logfile: log/roundhouse.log
+production:
+    :concurrency: 3

@@ -6,13 +6,15 @@ class FakeProductJob
   include Roundhouse::Worker
   include Let
 
+  CHAOS_MONKEY = 0
+
   attr_reader :shop_id
   let(:shop)           { Shops::DB[shop_id] }
   let(:shopify_domain) { shop['shopify_domain'] }
   let(:api_key)        { shop['api_key'] }
   let(:password)       { shop['password'] }
 
-  let(:site) { "https://#{api_key}:#{password}@#{shopify_domain}" }
+  let(:site) { "https://#{api_key}:#{password}@#{shopify_domain}/admin" }
 
   let(:product)       { ShopifyAPI::Product.new(product_data) }
   let(:product_data)  { attributes_for(:shopify_product, id: nil, created_at: nil, updated_at: nil, published_at: nil, variants: [], images: [] ) }
@@ -22,6 +24,8 @@ class FakeProductJob
   def perform(shop_id)
     @shop_id = shop_id
     return unless shop.present?
+
+    fail "Choas Monkey Strikes!" if CHAOS_MONKEY > 0 && rand(100) < CHAOS_MONKEY
 
     with_shopify_site do
       upload_product!
