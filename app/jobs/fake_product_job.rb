@@ -8,15 +8,13 @@ class FakeProductJob
 
   CHAOS_MONKEY = 0
 
-  attr_reader :shop_id
+  attr_reader :shop_id, :product_id
   let(:shop)           { Shops::DB[shop_id] }
   let(:shopify_domain) { shop['shopify_domain'] }
   let(:api_key)        { shop['api_key'] }
   let(:password)       { shop['password'] }
+  let(:shopify)        { ShopifyAPI::Metal::Session.connection shopify_domain, api_key: api_key, password: password, debug: true }
 
-  let(:site) { "https://#{api_key}:#{password}@#{shopify_domain}/admin" }
-
-  let(:product)       { ShopifyAPI::Product.new(product_data) }
   let(:product_data)  { attributes_for(:shopify_product, id: nil, created_at: nil, updated_at: nil, published_at: nil, variants: [], images: [] ) }
   let(:variants_data) { Array.new(rand(3), &method(:generate_variant)) }
   let(:images_data)   { Array.new(rand(9) + 1, &method(:generate_image)) }
@@ -27,43 +25,53 @@ class FakeProductJob
 
     fail "Choas Monkey Strikes!" if CHAOS_MONKEY > 0 && rand(100) < CHAOS_MONKEY
 
-    with_shopify_site do
-      upload_product!
-    end
-  end
-
-  def with_shopify_site(&block)
-    #ShopifyAPI::Session.temp(site, '', &block)
-    original = ShopifyAPI::Base.site
-
-    ShopifyAPI::Base.site = site
-    ShopifyAPI::Base.headers.delete('X-Shopify-Access-Token')
-    yield
-    ShopifyAPI::Base.site = original
+    upload_product!
   end
 
   def upload_product!
-    product.save!
-    log "products/#{product.id} - #{product.title}"
+    r = shopify.post('products.json', { product: product_data } )
+    unless r.status == 201
+      logger.error "Unable to create product. Aborting"
+      ap r
+      return false
+    end
+    @product_id = r.body['product']['id']
+    _title      = r.body['product']['title']
+
+    log "products/#{product_id} - #{_title}"
     # Cheat
     @images = images_data.map(&method(:upload_image!))
     variants_data.each(&method(:upload_variant!))
   end
 
   def upload_variant!(data)
-    var = ShopifyAPI::Variant.new(data)
-    var.prefix_options = { product_id: product.id }
-    var.image_id = @images.sample.id
-    var.save!
-    log "products/#{product.id}/variants/#{var.id} - #{var.title}"
+    final_data = data.merge image_id: @images.sample['id']
+    r = shopify.post("products/#{product_id}/variants.json", { variant: final_data } )
+
+    unless r.status == 201 || r.status == 200
+      logger.error "Unable to create variant. Aborting"
+      return false
+    end
+    _id    = r.body['variant']['id']
+    _title = r.body['variant']['title']
+
+    log "products/#{product_id}/variants/#{_id} - #{_title}"
   end
 
   def upload_image!(data)
-    img = ShopifyAPI::Image.new(data)
-    img.prefix_options = { product_id: product.id }
-    img.save!
-    log "products/#{product.id}/images/#{img.id} - #{img.src}"
-    img
+    r = shopify.post("products/#{product_id}/images.json", { image: data } )
+
+    unless r.status == 201 || r.status == 200
+      logger.error "Unable to create image. Aborting"
+      ap r
+      fail "Failed to create image"
+    end
+
+    _id  = r.body['image']['id']
+    _src = r.body['image']['src']
+
+    log "products/#{product_id}/images/#{_id} - #{_src}"
+    r.body['image']
   end
 
   def log(msg)

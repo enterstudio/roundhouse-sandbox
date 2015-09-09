@@ -8,6 +8,13 @@ GIT
       rails-observers (~> 0.1.2)
 
 PATH
+  remote: ../gems/shopify_api_metal
+  specs:
+    shopify_api_metal (0.1.0)
+      faraday (~> 0.9.1)
+      faraday_middleware
+
+PATH
   remote: ../gems/shopify_faker
   specs:
     shopify_faker (0.1.0)
@@ -114,11 +121,13 @@ GEM
     debug_inspector (0.0.2)
     dotenv (2.0.2)
     erubis (2.7.0)
-    fabrication (2.14.0)
+    fabrication (2.14.1)
     faker (1.5.0)
       i18n (~> 0.5)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.10.0)
+      faraday (>= 0.7.4, < 0.10)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.2)
@@ -159,7 +168,7 @@ GEM
       omniauth (~> 1.2)
     omniauth-shopify-oauth2 (1.1.10)
       omniauth-oauth2 (~> 1.2)
-    pg (0.18.2)
+    pg (0.18.3)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -215,9 +224,9 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    sprockets (3.3.3)
+    sprockets (3.3.4)
       rack (~> 1.0)
-    sprockets-rails (2.3.2)
+    sprockets-rails (2.3.3)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
@@ -251,6 +260,7 @@ DEPENDENCIES
   roundhouse-x!
   sdoc (~> 0.4.0)
   shopify-kaminari
+  shopify_api_metal!
   shopify_app
   shopify_faker!
   sinatra

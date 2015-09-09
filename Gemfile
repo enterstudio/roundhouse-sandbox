@@ -13,6 +13,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 #gem 'roundhouse-x', require: 'roundhouse'
 gem 'roundhouse-x', require: 'roundhouse', path: '../roundhouse'
 gem 'rlet', '~> 0.7.0'
+gem 'shopify_api_metal', path:'../gems/shopify_api_metal'
 
 # Shopify API gem
 gem 'activeresource', git: 'git://github.com/Shopify/activeresource'
