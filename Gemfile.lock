@@ -17,7 +17,7 @@ PATH
 PATH
   remote: ../roundhouse
   specs:
-    roundhouse-x (0.1.0)
+    roundhouse-x (0.2.0)
       celluloid (~> 0.17.0)
       connection_pool (~> 2.2, >= 2.2.0)
       json (~> 1.0)

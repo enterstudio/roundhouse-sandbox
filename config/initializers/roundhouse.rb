@@ -2,9 +2,9 @@ require 'roundhouse'
 require 'roundhouse/web'
 
 REDIS_URL = if Rails.env.production?
-              'redis://172.31.21.131:6379/2'
+              'redis://172.31.21.131:6379/14'
             else
-              'redis://127.0.0.1:6379/2'
+              'redis://127.0.0.1:6379/14'
             end
 
 
