@@ -21,6 +21,8 @@ class ChangeJob < ActiveJob::Base
         DeleteProductJob.perform_async(shop_id, shop_id)
       end
     end
+  ensure
+    logger.info "[ChangeJob] #{GC.stats}"
   end
 
   def rand_shop

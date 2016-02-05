@@ -30,6 +30,8 @@ class DeleteProductJob
       log "products/#{product.id} - #{product.title}"
       product.destroy
     end
+  ensure
+    logger.info "[DeleteProductJob] #{GC.stats}"
   end
 
   def with_shopify_site(&block)

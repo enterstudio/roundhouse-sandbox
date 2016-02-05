@@ -20,12 +20,18 @@ class FakeProductJob
   let(:images_data)   { Array.new(rand(9) + 1, &method(:generate_image)) }
 
   def perform(shop_id)
+    gc_log :start
     @shop_id = shop_id
     return unless shop.present?
 
     fail "Choas Monkey Strikes!" if CHAOS_MONKEY > 0 && rand(100) < CHAOS_MONKEY
 
     upload_product!
+  ensure
+    gc_log :end
+    @__memoized=nil # Clear this out to release objects
+    GC.start(full_mark: true, immediate_sweep: true)
+    gc_log :after_gc
   end
 
   def upload_product!
@@ -76,6 +82,10 @@ class FakeProductJob
 
   def log(msg)
     logger.info "[Generate #{shop_id}] #{msg}"
+  end
+
+  def gc_log(phase = nil)
+    log "[#{phase}] LiveObj=#{GC.stat(:heap_live_slots)} OldObj=#{GC.stat(:old_objects)}"
   end
 
   def generate_variant(_)
