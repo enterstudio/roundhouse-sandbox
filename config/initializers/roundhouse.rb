@@ -1,12 +1,7 @@
 require 'roundhouse'
 require 'roundhouse/web'
 
-REDIS_URL = if Rails.env.production?
-              'redis://172.31.21.131:6379/14'
-            else
-              'redis://127.0.0.1:6379/14'
-            end
-
+REDIS_URL = ENV['ROUNDHOUSE_SANDBOX_REDIS_URL'] || 'redis://127.0.0.1:6379/14'
 
 Roundhouse.configure_client do |config|
   config.redis = { namespace: 'roundhouse_sandbox:rh', url: REDIS_URL }
